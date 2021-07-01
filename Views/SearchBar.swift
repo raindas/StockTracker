@@ -48,6 +48,8 @@ struct SearchBar: View {
                 Button(action: {
                     self.isEditing = false
                     self.text = ""
+                    // dismiss keyboard
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
                 }, label: {
                     Text("Cancel")
                 })
