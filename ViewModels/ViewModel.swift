@@ -15,6 +15,9 @@ final class ViewModel: ObservableObject {
     @Published var searchQueryAlertTrigger = false
     @Published var searchQueryAlertMsg = ""
     
+    var token = "c3d2ma2ad3i868dopi9g"
+    var sandboxToken = "sandbox_c3d2ma2ad3i868dopia0"
+    
     private func isAddedToWatchlist (context: NSManagedObjectContext, tickerSymbol: String) -> Bool {
         let req = NSFetchRequest<NSFetchRequestResult>(entityName: "StockWatchlist")
         let res = (try? context.fetch(req)) as? [NSManagedObject] ?? []
@@ -58,7 +61,7 @@ final class ViewModel: ObservableObject {
     // get stock symbol
     public func fetchSymbols(query: String) {
         // define URL
-        guard let url = URL(string: "https://finnhub.io/api/v1/search?q=\(query)&token=sandbox_c3d2ma2ad3i868dopia0") else {
+        guard let url = URL(string: "https://finnhub.io/api/v1/search?q=\(query)&token=\(sandboxToken)") else {
             print("Invalid URL")
             return
         }
@@ -94,7 +97,7 @@ final class ViewModel: ObservableObject {
         let today = formatter.string(from: Date())
         
         var urlString: String {
-            return type == "general" ? "https://finnhub.io/api/v1/news?category=general&token=c3d2ma2ad3i868dopi9g" : "https://finnhub.io/api/v1/company-news?symbol=\(ticker)&from=\(sevenDaysAgo)&to=\(today)&token=c3d2ma2ad3i868dopi9g"
+            return type == "general" ? "https://finnhub.io/api/v1/news?category=general&token=\(token)" : "https://finnhub.io/api/v1/company-news?symbol=\(ticker)&from=\(sevenDaysAgo)&to=\(today)&token=\(token)"
         }
         
         // define URL

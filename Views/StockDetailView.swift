@@ -89,6 +89,8 @@ struct StockDetailView: View {
                 
                 ForEach(viewModel.marketNews, id: \.id) { news in
                     VStack(alignment: .leading) {
+                        RemoteImage(url: news.image)
+                                    .aspectRatio(contentMode: .fill)
                         Text(news.source).foregroundColor(.secondary)
                         Text(news.headline)
                             .fixedSize(horizontal: false, vertical: true)

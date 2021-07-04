@@ -40,6 +40,7 @@ struct MarketNews: Codable {
     var datetime: Int
     var headline: String
     var id: Int
+    var image: String
     var source: String
     var summary: String
     var url: String
