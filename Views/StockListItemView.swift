@@ -8,14 +8,19 @@
 import SwiftUI
 
 struct StockListItemView: View {
+    
+    let dateController = DateController()
     // stock values
     let symbol: String
     let description: String
     
+    @Binding var lastStockActivityDate: String
+    
     @State var stockQuote = Stock(currentPrice: 0.0, highPrice: 0.0, lowPrice: 0.0, openingPrice: 0.0, previousClosePrice: 0.0, timeStamp: 0)
     
-    @State var alertTrigger = false
-    @State var alertMsg = ""
+    @State private var alertTrigger = false
+    @State private var alertMsg = ""
+    @State private var detailScreenModal = false
     
     var body: some View {
         VStack {
@@ -40,10 +45,16 @@ struct StockListItemView: View {
         .onAppear(perform: {
             fetchSymbol(ticker: symbol)
         })
+        .onTapGesture {
+            self.detailScreenModal.toggle()
+        }
         .alert(isPresented: $alertTrigger, content: {
             Alert(title: Text("Error Encountered"),
                   message: Text(alertMsg),
                   dismissButton: .default(Text("OK")))
+        })
+        .sheet(isPresented: $detailScreenModal, content: {
+            StockDetailView(detailScreenModal: $detailScreenModal, open: stockQuote.openingPrice, high: stockQuote.highPrice, low: stockQuote.lowPrice, current: stockQuote.currentPrice, prevClose: stockQuote.previousClosePrice, change: stockQuote.change, symbol: symbol, description: description)
         })
     }
     // get stock details
@@ -70,12 +81,14 @@ struct StockListItemView: View {
                    // print(decodedResponse)
                     DispatchQueue.main.async {
                         self.stockQuote = decodedResponse
+                        self.lastStockActivityDate = dateController.epochToStandardDate(timestamp: stockQuote.timeStamp)
                     }
                     return
                 }
                 print(data)
             }
             //print("Quote fetch request failed: \(error?.localizedDescription ?? "Unknown Error")")
+            self.lastStockActivityDate = "Unable to fetch date"
             alertMsg = error?.localizedDescription ?? "Unknown Error"
             alertTrigger.toggle()
         }.resume()
@@ -84,6 +97,6 @@ struct StockListItemView: View {
 
 struct StockListItemView_Previews: PreviewProvider {
     static var previews: some View {
-        StockListItemView(symbol: "AAPL", description: "Apple Inc.")
+        StockListItemView(symbol: "AAPL", description: "Apple Inc.", lastStockActivityDate: .constant(""))
     }
 }

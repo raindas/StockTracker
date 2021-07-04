@@ -15,7 +15,12 @@ struct StockTrackerApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            TabView {
+                ContentView()
+                    .tabItem { Label("Watchlist", systemImage: "list.star") }
+                NewsView()
+                    .tabItem { Label("News", systemImage: "newspaper") }
+            }
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(viewModel)
         }

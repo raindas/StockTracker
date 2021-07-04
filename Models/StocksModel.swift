@@ -34,3 +34,13 @@ struct Stock: Codable {
     }
     
 }
+
+struct MarketNews: Codable {
+    var category: String
+    var datetime: Int
+    var headline: String
+    var id: Int
+    var source: String
+    var summary: String
+    var url: String
+}

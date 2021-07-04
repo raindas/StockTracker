@@ -10,6 +10,7 @@ import CoreData
 
 final class ViewModel: ObservableObject {
     @Published var symbolSearchResult = [SymbolSearchResult]()
+    @Published var marketNews = [MarketNews]()
     @Published var searchQuery = ""
     @Published var searchQueryAlertTrigger = false
     @Published var searchQueryAlertMsg = ""
@@ -81,6 +82,50 @@ final class ViewModel: ObservableObject {
                 searchQueryAlertMsg = error?.localizedDescription ?? "Unknown Error"
                 searchQueryAlertTrigger.toggle()
             }
+        }.resume()
+    }
+    
+    // get market news
+    func fetchNews(type: String, ticker: String) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        // the negative sign makes us deduct the number of seconds from the current date
+        let sevenDaysAgo = formatter.string(from: Date().addingTimeInterval(-(86400 * 7)))//<-- 86400 seconds = 1 day, (86400 * 7) seconds = 7 days
+        let today = formatter.string(from: Date())
+        
+        var urlString: String {
+            return type == "general" ? "https://finnhub.io/api/v1/news?category=general&token=c3d2ma2ad3i868dopi9g" : "https://finnhub.io/api/v1/company-news?symbol=\(ticker)&from=\(sevenDaysAgo)&to=\(today)&token=c3d2ma2ad3i868dopi9g"
+        }
+        
+        // define URL
+        guard let url = URL(string: urlString) else {
+            print("Invalid URL")
+            return
+        }
+        // create URL Request
+        let request = URLRequest(url: url)
+        // create and start a networking task with the URL request
+        // URL Session is the iOS class responsible for managing network requests
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let data = data {
+//                do {
+//                                let decodedResponse = try JSONDecoder().decode([MarketNews].self, from: data)
+//                    self.marketNews = decodedResponse
+//                            } catch {
+//                                print("Unable to decode JSON -> \(error)")
+//                            }
+                let decodedResponse = try? JSONDecoder().decode([MarketNews].self, from: data)
+                if let decodedResponse = decodedResponse {
+                    //print(decodedResponse)
+                    DispatchQueue.main.async {
+                        self.marketNews = decodedResponse
+                    }
+                    return
+                }
+            }
+            print("News fetch request failed: \(error?.localizedDescription ?? "Unknown Error")")
+//            alertMsg = error?.localizedDescription ?? "Unknown Error"
+//            alertTrigger.toggle()
         }.resume()
     }
     

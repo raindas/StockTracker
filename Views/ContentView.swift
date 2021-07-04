@@ -16,13 +16,15 @@ struct ContentView: View {
     @FetchRequest(sortDescriptors: [])
     private var stockWatchlist: FetchedResults<StockWatchlist>
     
+    @State var lastStockActivityDate = "Fetching date"
+    
     var body: some View {
         VStack {
             HStack {
                 VStack(alignment: .leading) {
                     Text("Stock Tracker")
                         .font(.largeTitle.bold())
-                    Text(Date(), style: .date).bold().foregroundColor(.secondary)
+                    Text(lastStockActivityDate).bold().foregroundColor(.secondary)
                 }
                 
                 Spacer()
@@ -54,7 +56,7 @@ struct ContentView: View {
                 
                 ForEach(stockWatchlist) { stock in
                     if viewModel.searchQuery == "" {
-                        StockListItemView(symbol: stock.tickerSymbol!, description: stock.tickerSymbolDescription!)
+                        StockListItemView(symbol: stock.tickerSymbol!, description: stock.tickerSymbolDescription!, lastStockActivityDate: $lastStockActivityDate)
                     }
                 }.onDelete(perform: deleteItems)
             }
