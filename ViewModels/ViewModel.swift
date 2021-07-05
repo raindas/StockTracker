@@ -15,8 +15,8 @@ final class ViewModel: ObservableObject {
     @Published var searchQueryAlertTrigger = false
     @Published var searchQueryAlertMsg = ""
     
-    var token = "c3d2ma2ad3i868dopi9g"
-    var sandboxToken = "sandbox_c3d2ma2ad3i868dopia0"
+    var token = ""//<-- Insert your API token here
+    var sandboxToken = ""//<-- Insert your API sandbox token here
     
     private func isAddedToWatchlist (context: NSManagedObjectContext, tickerSymbol: String) -> Bool {
         let req = NSFetchRequest<NSFetchRequestResult>(entityName: "StockWatchlist")
