@@ -17,7 +17,6 @@ final class ViewModel: ObservableObject {
     
     var token = "c3d2ma2ad3i868dopi9g"
     var sandboxToken = "sandbox_c3d2ma2ad3i868dopia0"
-    var minId = "6754924"
     
     private func isAddedToWatchlist (context: NSManagedObjectContext, tickerSymbol: String) -> Bool {
         let req = NSFetchRequest<NSFetchRequestResult>(entityName: "StockWatchlist")
@@ -94,11 +93,11 @@ final class ViewModel: ObservableObject {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         // the negative sign makes us deduct the number of seconds from the current date
-        let fiveDaysAgo = formatter.string(from: Date().addingTimeInterval(-(86400 * 5)))//<-- 86400 seconds = 1 day, (86400 * 5) seconds = 5 days
+        let sevenDaysAgo = formatter.string(from: Date().addingTimeInterval(-(86400 * 7)))//<-- 86400 seconds = 7 day, (86400 * 7) seconds = 7 days
         let today = formatter.string(from: Date())
         
         var urlString: String {
-            return type == "general" ? "https://finnhub.io/api/v1/news?category=general&minId=\(minId)&token=\(token)" : "https://finnhub.io/api/v1/company-news?symbol=\(ticker)&from=\(fiveDaysAgo)&to=\(today)&token=\(token)"
+            return type == "general" ? "https://finnhub.io/api/v1/news?category=general&token=\(token)" : "https://finnhub.io/api/v1/company-news?symbol=\(ticker)&from=\(sevenDaysAgo)&to=\(today)&token=\(token)"
         }
         
         // define URL

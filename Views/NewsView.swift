@@ -21,7 +21,7 @@ struct NewsView: View {
             }.padding(.top)
             // News items
             ScrollView {
-                ForEach(viewModel.marketNews, id: \.id) { news in
+                ForEach(viewModel.marketNews.prefix(20), id: \.id) { news in
                     VStack(alignment: .leading) {
                         RemoteImage(url: news.image)
                                     .aspectRatio(contentMode: .fill)
